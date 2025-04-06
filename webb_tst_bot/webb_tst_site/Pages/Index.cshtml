@@ -1,0 +1,34 @@
+﻿@page
+@model webb_tst_site.Pages.IndexModel
+@{
+    ViewData["Title"] = "Rune Randomizer";
+}
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h1 class="display-4">Welcome to Rune Randomizer</h1>
+
+        <div class="mt-4">
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <h3>Select your role:</h3>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/Randomizer" class="btn btn-primary btn-lg">User</a>
+                    <a href="/Admin/Login" class="btn btn-secondary btn-lg">Admin</a>
+                </div>
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                <div class="alert alert-info">
+                    You are logged in as Administrator
+                </div>
+                <a href="/Admin" class="btn btn-primary btn-lg">Go to Admin Panel</a>
+                <a href="/Randomizer" class="btn btn-secondary btn-lg mt-2">Try Randomizer</a>
+            }
+            else
+            {
+                <a href="/Randomizer" class="btn btn-primary btn-lg">Go to Randomizer</a>
+            }
+        </div>
+    </div>
+</div>

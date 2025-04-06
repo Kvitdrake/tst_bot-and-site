@@ -1,0 +1,61 @@
+﻿@page
+@model webb_tst_site.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Admin Panel</h1>
+        <div>
+            <a href="/Randomizer" class="btn btn-info me-2">Randomizer</a>
+            <form method="post" asp-page="/Admin/Logout" class="d-inline">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Секция рун -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Runes Management</h5>
+                </div>
+                <div class="card-body">
+                    <a asp-page="/Admin/Runes/Index" class="btn btn-success w-100 mb-3">View All Runes</a>
+                    <a asp-page="/Admin/Runes/Create" class="btn btn-primary w-100">Add New Rune</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Секция сфер -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Spheres Management</h5>
+                </div>
+                <div class="card-body">
+                    <a asp-page="/Admin/Spheres/Index" class="btn btn-success w-100 mb-3">View All Spheres</a>
+                    <a asp-page="/Admin/Spheres/Create" class="btn btn-primary w-100">Add New Sphere</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Randomizer Preview</h5>
+                    </div>
+                    <div class="card-body">
+                        @await Html.PartialAsync("_RandomizerPartial", new webb_tst_site.Pages.Shared.RandomizerModel
+                   {
+                       Spheres = Model.Spheres // Передаем список сфер
+                   })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

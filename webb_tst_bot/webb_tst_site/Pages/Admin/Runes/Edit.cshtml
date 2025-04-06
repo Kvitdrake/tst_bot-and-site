@@ -1,0 +1,55 @@
+﻿@page "{id:int?}"
+@model webb_tst_site.Pages.Admin.Runes.EditModel
+@{
+    ViewData["Title"] = Model.Rune.Id == 0 ? "Create Rune" : "Edit Rune";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Rune.Id" />
+
+        <div class="mb-3">
+            <label asp-for="Rune.Name" class="form-label"></label>
+            <input asp-for="Rune.Name" class="form-control" />
+            <span asp-validation-for="Rune.Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Rune.BaseDescription" class="form-label"></label>
+            <textarea asp-for="Rune.BaseDescription" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Rune.BaseDescription" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Rune.ImageUrl" class="form-label"></label>
+            <input asp-for="Rune.ImageUrl" class="form-control" />
+            <span asp-validation-for="Rune.ImageUrl" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Sphere Descriptions</label>
+            @foreach (var sphere in Model.AllSpheres)
+            {
+                <div class="card mb-2">
+                    <div class="card-header">
+                        @sphere.Name
+                    </div>
+                    <div class="card-body">
+                        <textarea name="SphereDescriptions[@sphere.Id]"
+                                  class="form-control"
+                                  rows="2">@Model.GetDescriptionForSphere(sphere.Id)</textarea>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

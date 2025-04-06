@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "webb_tst_site/1.0.0": {
+        "runtime": {
+          "webb_tst_site.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "webb_tst_site/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webb_tst_bot", "webb_tst_bot\webb_tst_bot.csproj", "{0EA5C206-FAB3-4038-A4AE-8600259CF8FC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webb_tst_site", "webb_tst_site\webb_tst_site.csproj", "{AAA54B58-9DD7-4409-9AE8-2A16D821C373}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0EA5C206-FAB3-4038-A4AE-8600259CF8FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EA5C206-FAB3-4038-A4AE-8600259CF8FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EA5C206-FAB3-4038-A4AE-8600259CF8FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EA5C206-FAB3-4038-A4AE-8600259CF8FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAA54B58-9DD7-4409-9AE8-2A16D821C373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAA54B58-9DD7-4409-9AE8-2A16D821C373}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAA54B58-9DD7-4409-9AE8-2A16D821C373}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAA54B58-9DD7-4409-9AE8-2A16D821C373}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {87779D05-19E0-4ED6-B29E-A5B087733EAC}
+	EndGlobalSection
+EndGlobal

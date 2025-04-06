@@ -1,0 +1,43 @@
+/* Стили для страницы входа */
+.login-container {
+    max-width: 450px;
+    margin: 0 auto;
+    padding-top: 50px;
+}
+
+.login-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-header {
+    border-radius: 9px 9px 0 0 !important;
+    padding: 20px;
+    background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+}
+
+.login-body {
+    padding: 30px;
+}
+
+.login-alert {
+    border-left: 4px solid #dc3545;
+}
+
+.login-btn {
+    padding: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.field-error {
+    font-size: 0.85rem;
+    color: #dc3545;
+    margin-top: 5px;
+}
+
+.input-error {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}

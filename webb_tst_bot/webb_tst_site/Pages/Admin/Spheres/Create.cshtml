@@ -1,0 +1,37 @@
+﻿@page
+@model webb_tst_site.Pages.Admin.Spheres.CreateModel
+@{
+    ViewData["Title"] = "Create Sphere";
+}
+
+<div class="container mt-4">
+    <h1>Create New Sphere</h1>
+
+    <form method="post">
+        <div class="mb-3">
+            <label asp-for="Sphere.Name" class="form-label">Name</label>
+            <input asp-for="Sphere.Name" class="form-control" />
+            <span asp-validation-for="Sphere.Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Sphere.Description" class="form-label">Description</label>
+            <textarea asp-for="Sphere.Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Sphere.Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Sphere.ImageUrl" class="form-label">Image URL</label>
+            <input asp-for="Sphere.ImageUrl" class="form-control" placeholder="https://example.com/image.jpg" />
+            <span asp-validation-for="Sphere.ImageUrl" class="text-danger"></span>
+            <small class="form-text text-muted">Paste direct link to the image</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

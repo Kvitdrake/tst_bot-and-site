@@ -1,0 +1,91 @@
+﻿@model webb_tst_site.Pages.Shared.RandomizerModel
+
+<div class="text-center">
+    <h3>Random Rune Generator</h3>
+    <button id="generateBtn" class="btn btn-primary mb-3">
+        <i class="fas fa-random"></i> Generate Random Rune
+    </button>
+
+    @if (Model.Spheres != null && Model.Spheres.Any())
+    {
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-6">
+                <select id="sphereSelect" class="form-select">
+                    <option value="">All Spheres</option>
+                    @foreach (var sphere in Model.Spheres)
+                    {
+                        <option value="@sphere.Id">@sphere.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    }
+
+    <div id="result" class="mt-4" style="display: none;"></div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const generateBtn = document.getElementById('generateBtn');
+            const sphereSelect = document.getElementById('sphereSelect');
+            const resultDiv = document.getElementById('result');
+
+            generateBtn.addEventListener('click', async function () {
+                const sphereId = sphereSelect.value;
+                let url = '/api/runes/random';
+
+                if (sphereId) {
+                    url += `?sphereId=${sphereId}`;
+                }
+
+                try {
+                    generateBtn.disabled = true;
+                    generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generating...';
+
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    resultDiv.innerHTML = `
+                                <div class="card mx-auto" style="max-width: 500px;">
+                                    <div class="card-body text-center">
+                                        <h4>${data.name}</h4>
+                                        <img src="${data.imageUrl}" class="img-fluid mb-3" style="max-height: 200px;">
+                                        <div class="card-text">${data.description.replace(/\n/g, '<br>')}</div>
+                                        ${data.sphereName ? `<div class="text-muted mt-2">Sphere: ${data.sphereName}</div>` : ''}
+                                    </div>
+                                </div>
+                                <button id="generateAgainBtn" class="btn btn-outline-primary mt-3">
+                                    <i class="fas fa-redo"></i> Generate Again
+                                </button>
+                            `;
+
+                    document.getElementById('generateAgainBtn').addEventListener('click', function () {
+                        generateBtn.click();
+                    });
+
+                    resultDiv.style.display = 'block';
+                } catch (error) {
+                    resultDiv.innerHTML = `
+                                <div class="alert alert-danger">
+                                    Error: ${error.message}
+                                </div>
+                                <button class="btn btn-warning mt-2" onclick="window.location.reload()">
+                                    <i class="fas fa-sync-alt"></i> Try Again
+                                </button>
+                            `;
+                    resultDiv.style.display = 'block';
+                    console.error('Error:', error);
+                } finally {
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '<i class="fas fa-random"></i> Generate Random Rune';
+                }
+            });
+        });
+    </script>
+}

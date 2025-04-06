@@ -1,0 +1,45 @@
+﻿@page
+@model webb_tst_site.Pages.Admin.Spheres.IndexModel
+@{
+    ViewData["Title"] = "All Spheres";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>All Spheres</h1>
+        <a asp-page="Create" class="btn btn-primary">Add New Sphere</a>
+    </div>
+
+    <div class="row">
+        @foreach (var sphere in Model.Spheres)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    @if (!string.IsNullOrEmpty(sphere.ImageUrl))
+                    {
+                        <img src="@sphere.ImageUrl" class="card-img-top" alt="@sphere.Name"
+                             style="height: 200px; object-fit: contain;"
+                             onerror="this.onerror=null;this.src='/images/default-image.png';">
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                             style="height: 200px;">
+                            <span class="text-muted">No image</span>
+                        </div>
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@sphere.Name</h5>
+                        <p class="card-text">@sphere.Description</p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a asp-page="Edit" asp-route-id="@sphere.Id" class="btn btn-warning">Edit</a>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@sphere.Id" class="d-inline">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

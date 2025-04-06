@@ -1,0 +1,122 @@
+﻿@page
+@model webb_tst_site.Pages.RandomizerModel;
+@{
+    ViewData["Title"] = "Rune Randomizer";
+}
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h1 class="display-4">Rune Randomizer</h1>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="text-end mb-3">
+                <small>Logged in as: @User.Identity.Name</small>
+            </div>
+        }
+
+        <div class="mt-4">
+            <h3>Random Rune Generator</h3>
+            <button id="generateBtn" class="btn btn-primary">
+                <i class="fas fa-random"></i> Generate Random Rune
+            </button>
+
+            <div class="row justify-content-center mt-3">
+                <div class="col-md-6">
+                    <label for="sphereSelect" class="form-label">Select Sphere (optional):</label>
+                    <select id="sphereSelect" class="form-select">
+                        <option value="">All Spheres</option>
+                        @foreach (var sphere in Model.Spheres)
+                        {
+                            <option value="@sphere.Id">@sphere.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div id="loading" class="mt-4" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Generating rune...</p>
+            </div>
+
+            <div id="result" class="mt-4" style="display: none;">
+                <div class="card mx-auto" style="max-width: 500px;">
+                    <div class="card-body text-center">
+                        <h4 id="runeName" class="card-title"></h4>
+                        <img id="runeImage" src="" class="img-fluid mb-3" style="max-height: 200px;">
+                        <div id="runeDescription" class="card-text"></div>
+                        <div id="sphereInfo" class="text-muted mt-2"></div>
+                    </div>
+                </div>
+                <button id="generateAgainBtn" class="btn btn-outline-primary mt-3">
+                    <i class="fas fa-redo"></i> Generate Again
+                </button>
+            </div>
+
+            <div id="error" class="alert alert-danger mt-4" style="display: none;"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const generateBtn = document.getElementById('generateBtn');
+            const generateAgainBtn = document.getElementById('generateAgainBtn');
+            const sphereSelect = document.getElementById('sphereSelect');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            const error = document.getElementById('error');
+
+            const generateRune = async () => {
+                // Reset UI
+                loading.style.display = 'block';
+                result.style.display = 'none';
+                error.style.display = 'none';
+
+                const sphereId = sphereSelect.value;
+                let url = '/api/runes/random';
+
+                if (sphereId) {
+                    url += `?sphereId=${sphereId}`;
+                }
+
+                try {
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    // Update UI with results
+                    document.getElementById('runeName').textContent = data.name;
+                    document.getElementById('runeImage').src = data.imageUrl;
+                    document.getElementById('runeDescription').innerHTML =
+                        data.description.replace(/\n/g, '<br>');
+
+                    if (data.sphereName) {
+                        document.getElementById('sphereInfo').textContent = `Sphere: ${data.sphereName}`;
+                    } else {
+                        document.getElementById('sphereInfo').textContent = '';
+                    }
+
+                    loading.style.display = 'none';
+                    result.style.display = 'block';
+                } catch (err) {
+                    loading.style.display = 'none';
+                    error.style.display = 'block';
+                    error.textContent = `Error: ${err.message}`;
+                    console.error('Error:', err);
+                }
+            };
+
+            // Event listeners
+            generateBtn.addEventListener('click', generateRune);
+            generateAgainBtn.addEventListener('click', generateRune);
+        });
+    </script>
+}
