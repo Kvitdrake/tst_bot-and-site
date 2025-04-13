@@ -36,21 +36,22 @@ namespace webb_tst_site3.Pages.Admin.Runes
                 return Page();
             }
 
+            // Установка значений по умолчанию
+            Rune.ImageUrl ??= "/images/default-rune.png";
             Rune.CreatedAt = DateTime.UtcNow;
             Rune.UpdatedAt = DateTime.UtcNow;
-            Rune.ImageUrl ??= "/images/default-rune.png";
 
             _context.Runes.Add(Rune);
             await _context.SaveChangesAsync();
 
-            // Добавляем описания для каждой сферы
-            foreach (var (sphereId, description) in SphereDescriptions)
+            // Добавление связей со сферами
+            foreach (var sphere in await _context.Spheres.ToListAsync())
             {
                 _context.RuneSphereDescriptions.Add(new RuneSphereDescription
                 {
                     RuneId = Rune.Id,
-                    SphereId = sphereId,
-                    Description = description
+                    SphereId = sphere.Id,
+                    Description = "Нет описания" // или можно оставить пустым
                 });
             }
 

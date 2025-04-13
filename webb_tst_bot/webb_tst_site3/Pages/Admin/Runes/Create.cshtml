@@ -24,12 +24,14 @@
                             <span asp-validation-for="Rune.Name" class="text-danger"></span>
                         </div>
 
+                        <!-- Измените поле BaseDescription, убрав required -->
                         <div class="mb-3">
-                            <label asp-for="Rune.BaseDescription" class="form-label">Основное описание *</label>
-                            <textarea asp-for="Rune.BaseDescription" class="form-control" rows="4" required></textarea>
+                            <label asp-for="Rune.BaseDescription" class="form-label">Основное описание</label>
+                            <textarea asp-for="Rune.BaseDescription" class="form-control" rows="4"></textarea>
                             <span asp-validation-for="Rune.BaseDescription" class="text-danger"></span>
                         </div>
 
+                        <!-- Оставьте ImageUrl без изменений (уже необязательное) -->
                         <div class="mb-3">
                             <label asp-for="Rune.ImageUrl" class="form-label">Ссылка на изображение</label>
                             <input asp-for="Rune.ImageUrl" class="form-control" placeholder="https://example.com/rune-image.jpg" />

@@ -4,25 +4,21 @@ namespace webb_tst_site3.Models
 {
     public class Sphere
     {
-        public Sphere()
-        {
-            RuneDescriptions = new HashSet<RuneSphereDescription>();
-        }
-
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Name is required")]
-        [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters")]
+        [Required(ErrorMessage = "Название сферы обязательно")]
+        [StringLength(100, ErrorMessage = "Название не должно превышать 100 символов")]
         public string Name { get; set; }
 
-        public string Description { get; set; }
+        // Сделаем описание необязательным
+        public string? Description { get; set; }
 
-        [Url(ErrorMessage = "Please enter a valid URL")]
-        public string ImageUrl { get; set; }
+        // Сделаем изображение необязательным
+        public string? ImageUrl { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        public virtual ICollection<RuneSphereDescription> RuneDescriptions { get; set; }
+        public virtual ICollection<RuneSphereDescription> RuneDescriptions { get; set; } = new List<RuneSphereDescription>();
     }
 }

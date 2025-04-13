@@ -24,6 +24,7 @@
             <span asp-validation-for="Sphere.Name" class="text-danger"></span>
         </div>
 
+        <!-- Для создания сферы (Pages/Admin/Spheres/Create.cshtml) -->
         <div class="mb-3">
             <label asp-for="Sphere.Description" class="form-label">Описание</label>
             <textarea asp-for="Sphere.Description" class="form-control" rows="3"></textarea>
@@ -31,7 +32,7 @@
 
         <div class="mb-3">
             <label asp-for="Sphere.ImageUrl" class="form-label">Ссылка на изображение</label>
-            <input asp-for="Sphere.ImageUrl" class="form-control" placeholder="https://example.com/image.jpg" />
+            <input asp-for="Sphere.ImageUrl" class="form-control" placeholder="https://example.com/sphere-image.jpg" />
             <small class="text-muted">Оставьте пустым для изображения по умолчанию</small>
         </div>
 

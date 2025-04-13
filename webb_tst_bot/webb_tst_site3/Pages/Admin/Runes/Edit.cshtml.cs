@@ -34,6 +34,7 @@ namespace webb_tst_site3.Pages.Admin.Runes
 
             AllSpheres = await _context.Spheres.ToListAsync();
 
+            // Заполняем описания для сфер
             foreach (var sphere in AllSpheres)
             {
                 var description = Rune.SphereDescriptions?
@@ -43,6 +44,13 @@ namespace webb_tst_site3.Pages.Admin.Runes
             }
 
             return Page();
+        }
+
+        public string GetSphereDescription(int sphereId)
+        {
+            return SphereDescriptions.TryGetValue(sphereId, out var description)
+                ? description
+                : "Нет описания";
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -62,6 +70,7 @@ namespace webb_tst_site3.Pages.Admin.Runes
                 return NotFound();
             }
 
+            // Обновляем основные свойства
             existingRune.Name = Rune.Name;
             existingRune.BaseDescription = Rune.BaseDescription;
             existingRune.ImageUrl = Rune.ImageUrl ?? "/images/default-rune.png";
@@ -70,7 +79,10 @@ namespace webb_tst_site3.Pages.Admin.Runes
             // Обновляем описания для сфер
             foreach (var description in existingRune.SphereDescriptions)
             {
-                description.Description = Request.Form[$"SphereDescriptions[{description.SphereId}]"];
+                if (Request.Form.TryGetValue($"SphereDescriptions[{description.SphereId}]", out var newDescription))
+                {
+                    description.Description = newDescription;
+                }
             }
 
             await _context.SaveChangesAsync();

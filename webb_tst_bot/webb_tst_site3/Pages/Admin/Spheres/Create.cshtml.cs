@@ -17,7 +17,6 @@ namespace webb_tst_site3.Pages.Admin.Spheres
 
         [BindProperty]
         public Sphere Sphere { get; set; }
-
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -25,6 +24,7 @@ namespace webb_tst_site3.Pages.Admin.Spheres
                 return Page();
             }
 
+            // Установка значений по умолчанию
             Sphere.ImageUrl ??= "/images/default-sphere.png";
             Sphere.CreatedAt = DateTime.UtcNow;
             Sphere.UpdatedAt = DateTime.UtcNow;
@@ -32,18 +32,6 @@ namespace webb_tst_site3.Pages.Admin.Spheres
             _context.Spheres.Add(Sphere);
             await _context.SaveChangesAsync();
 
-            // Добавляем связи со всеми рунами
-            foreach (var rune in await _context.Runes.ToListAsync())
-            {
-                _context.RuneSphereDescriptions.Add(new RuneSphereDescription
-                {
-                    RuneId = rune.Id,
-                    SphereId = Sphere.Id,
-                    Description = "Нет описания"
-                });
-            }
-
-            await _context.SaveChangesAsync();
             return RedirectToPage("./Index");
         }
     }
