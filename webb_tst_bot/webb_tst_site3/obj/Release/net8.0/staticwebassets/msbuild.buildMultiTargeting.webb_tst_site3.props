@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\webb_tst_site3.props" />
+</Project>

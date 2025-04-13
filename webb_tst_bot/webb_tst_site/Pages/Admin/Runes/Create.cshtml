@@ -1,11 +1,11 @@
 ﻿@page
 @model webb_tst_site.Pages.Admin.Runes.CreateModel
 @{
-    ViewData["Title"] = "Create Rune";
+    ViewData["Title"] = "Добавление руны";
 }
 
 <div class="container mt-4">
-    <h1>Create New Rune</h1>
+    <h1>@ViewData["Title"]</h1>
 
     @if (!ViewData.ModelState.IsValid)
     {
@@ -17,54 +17,32 @@
         </div>
     }
 
-    <form method="post">
+    <form method="post" class="mt-4">
         <div class="mb-3">
-            <label asp-for="Rune.Name" class="form-label">Name *</label>
+            <label asp-for="Rune.Name" class="form-label">Название *</label>
             <input asp-for="Rune.Name" class="form-control" required />
             <span asp-validation-for="Rune.Name" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Rune.BaseDescription" class="form-label">Base Description *</label>
+            <label asp-for="Rune.BaseDescription" class="form-label">Основное описание *</label>
             <textarea asp-for="Rune.BaseDescription" class="form-control" rows="3" required></textarea>
             <span asp-validation-for="Rune.BaseDescription" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="ImageUrl" class="form-label">Image URL</label>
-            <input asp-for="ImageUrl" class="form-control" placeholder="https://example.com/rune.jpg" />
-            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            <label asp-for="Rune.ImageUrl" class="form-label">Ссылка на изображение</label>
+            <input asp-for="Rune.ImageUrl" class="form-control" placeholder="https://example.com/image.jpg" />
+            <small class="text-muted">Оставьте пустым для изображения по умолчанию</small>
         </div>
 
-        <div class="mb-3">
-            <h5>Sphere Descriptions *</h5>
-            @foreach (var sphere in Model.AllSpheres)
-            {
-                <div class="card mb-2">
-                    <div class="card-header">
-                        @sphere.Name
-                    </div>
-                    <div class="card-body">
-                        <textarea name="SphereDescriptions[@sphere.Id]"
-                                  class="form-control"
-                                  rows="2"
-                                  required></textarea>
-                    </div>
-                </div>
-            }
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a asp-page="Index" class="btn btn-secondary me-md-2">Отмена</a>
+            <button type="submit" class="btn btn-primary">Создать</button>
         </div>
-
-        <button type="submit" class="btn btn-primary">Create</button>
-        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        // Добавляем required для всех textarea описаний сфер
-        document.querySelectorAll('textarea[name^="SphereDescriptions"]').forEach(ta => {
-            ta.required = true;
-        });
-    </script>
 }

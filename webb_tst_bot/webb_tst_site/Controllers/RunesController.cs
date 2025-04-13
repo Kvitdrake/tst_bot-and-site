@@ -10,79 +10,47 @@ namespace webb_tst_site.Controllers
     public class RunesController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<RunesController> _logger;
+        private readonly Random _random = new();
 
-        public RunesController(AppDbContext context, ILogger<RunesController> logger)
+        public RunesController(AppDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         [HttpGet("random")]
         public async Task<IActionResult> GetRandomRune([FromQuery] int? sphereId = null)
         {
-            try
+            var query = _context.Runes
+                .Include(r => r.SphereDescriptions)
+                .ThenInclude(sd => sd.Sphere)
+                .AsQueryable();
+
+            if (sphereId.HasValue)
             {
-                var random = new Random();
-                IQueryable<Rune> runesQuery = _context.Runes
-                    .Include(r => r.SphereDescriptions)
-                    .ThenInclude(sd => sd.Sphere);
-
-                if (sphereId.HasValue)
-                {
-                    runesQuery = runesQuery
-                        .Where(r => r.SphereDescriptions.Any(sd => sd.SphereId == sphereId.Value));
-                }
-
-                var availableRunes = await runesQuery.ToListAsync();
-
-                if (availableRunes.Count == 0)
-                {
-                    return NotFound(sphereId.HasValue
-                        ? "No runes available for selected sphere"
-                        : "No runes available");
-                }
-
-                var randomRune = availableRunes[random.Next(availableRunes.Count)];
-                string description = randomRune.BaseDescription;
-                string sphereName = null;
-
-                if (sphereId.HasValue)
-                {
-                    var sphereDescription = randomRune.SphereDescriptions
-                        .FirstOrDefault(sd => sd.SphereId == sphereId.Value);
-
-                    if (sphereDescription != null)
-                    {
-                        description = sphereDescription.Description;
-                        sphereName = sphereDescription.Sphere?.Name;
-                    }
-                }
-                else if (randomRune.SphereDescriptions.Count > 0)
-                {
-                    var randomDescription = randomRune.SphereDescriptions
-                        .OrderBy(x => random.Next())
-                        .First();
-
-                    description = randomDescription.Description;
-                    sphereName = randomDescription.Sphere?.Name;
-                }
-
-                return Ok(new
-                {
-                    name = randomRune.Name,
-                    imageUrl = !string.IsNullOrEmpty(randomRune.ImageUrl)
-                        ? randomRune.ImageUrl
-                        : "/images/default-rune.png",
-                    description = description,
-                    sphereName = sphereName
-                });
+                query = query.Where(r => r.SphereDescriptions.Any(sd => sd.SphereId == sphereId.Value));
             }
-            catch (Exception ex)
+
+            var runes = await query.ToListAsync();
+            if (!runes.Any()) return NotFound();
+
+            var rune = runes[_random.Next(runes.Count)];
+            var description = rune.BaseDescription;
+            var sphereName = "";
+
+            if (sphereId.HasValue)
             {
-                _logger.LogError(ex, "Error generating random rune");
-                return StatusCode(500, "Internal server error");
+                var sphereDesc = rune.SphereDescriptions.FirstOrDefault(sd => sd.SphereId == sphereId.Value);
+                description = sphereDesc?.Description ?? description;
+                sphereName = sphereDesc?.Sphere?.Name ?? "";
             }
+
+            return Ok(new
+            {
+                name = rune.Name,
+                imageUrl = string.IsNullOrEmpty(rune.ImageUrl) ? "/images/default-rune.png" : rune.ImageUrl,
+                description,
+                sphereName
+            });
         }
     }
 }

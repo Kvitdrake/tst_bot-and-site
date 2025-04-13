@@ -1,52 +1,53 @@
-﻿@page "{id:int?}"
+﻿@page "{id:int}"
 @model webb_tst_site.Pages.Admin.Runes.EditModel
 @{
-    ViewData["Title"] = Model.Rune.Id == 0 ? "Create Rune" : "Edit Rune";
+    ViewData["Title"] = "Редактирование руны";
 }
 
 <div class="container mt-4">
     <h1>@ViewData["Title"]</h1>
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post">
         <input type="hidden" asp-for="Rune.Id" />
 
         <div class="mb-3">
-            <label asp-for="Rune.Name" class="form-label"></label>
-            <input asp-for="Rune.Name" class="form-control" />
+            <label asp-for="Rune.Name" class="form-label">Название *</label>
+            <input asp-for="Rune.Name" class="form-control" required />
             <span asp-validation-for="Rune.Name" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Rune.BaseDescription" class="form-label"></label>
-            <textarea asp-for="Rune.BaseDescription" class="form-control" rows="3"></textarea>
+            <label asp-for="Rune.BaseDescription" class="form-label">Основное описание *</label>
+            <textarea asp-for="Rune.BaseDescription" class="form-control" rows="3" required></textarea>
             <span asp-validation-for="Rune.BaseDescription" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Rune.ImageUrl" class="form-label"></label>
+            <label asp-for="Rune.ImageUrl" class="form-label">Ссылка на изображение</label>
             <input asp-for="Rune.ImageUrl" class="form-control" />
-            <span asp-validation-for="Rune.ImageUrl" class="text-danger"></span>
+            <small class="text-muted">Оставьте пустым для изображения по умолчанию</small>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Sphere Descriptions</label>
-            @foreach (var sphere in Model.AllSpheres)
-            {
-                <div class="card mb-2">
-                    <div class="card-header">
-                        @sphere.Name
-                    </div>
-                    <div class="card-body">
-                        <textarea name="SphereDescriptions[@sphere.Id]"
-                                  class="form-control"
-                                  rows="2">@Model.GetDescriptionForSphere(sphere.Id)</textarea>
-                    </div>
+        <h4 class="mt-4">Описания для сфер:</h4>
+
+        @foreach (var sphere in Model.AllSpheres)
+        {
+            <div class="card mb-3">
+                <div class="card-header">
+                    @sphere.Name
                 </div>
-            }
-        </div>
+                <div class="card-body">
+                    <textarea name="SphereDescriptions[@sphere.Id]"
+                              class="form-control"
+                              rows="2">@Model.OnGetAsync(sphere.Id)</textarea>
+                </div>
+            </div>
+        }
 
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+            <a asp-page="Index" class="btn btn-secondary me-md-2">Отмена</a>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
     </form>
 </div>
 

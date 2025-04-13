@@ -1,28 +1,26 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authentication;
-using webb_tst_site.Data;
-using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using webb_tst_site.Data;
 using webb_tst_site.Models;
 
 namespace webb_tst_site.Pages.Admin
 {
-    [IgnoreAntiforgeryToken]
     public class LoginModel : PageModel
     {
         private readonly AppDbContext _context;
         private readonly ILogger<LoginModel> _logger;
-        private readonly IAntiforgery _antiforgery;
 
-        public LoginModel(AppDbContext context, ILogger<LoginModel> logger, IAntiforgery antiforgery)
+        public LoginModel(AppDbContext context, ILogger<LoginModel> logger)
         {
             _context = context;
             _logger = logger;
-            _antiforgery = antiforgery;
         }
 
         [BindProperty]
@@ -30,67 +28,72 @@ namespace webb_tst_site.Pages.Admin
 
         public class InputModel
         {
-            [Required(ErrorMessage = "Имя пользователя обязательно")]
+            [Required(ErrorMessage = "Требуется имя пользователя")]
             public string Username { get; set; }
 
-            [Required(ErrorMessage = "Пароль обязателен")]
+            [Required(ErrorMessage = "Требуется пароль")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
         }
 
-        public void OnGet()
-        {
-            // Генерация CSRF-токена
-            var tokens = _antiforgery.GetAndStoreTokens(HttpContext);
-            ViewData["RequestVerificationToken"] = tokens.RequestToken;
-        }
-
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            if (!ModelState.IsValid) return Page();
 
-            // Временный обход проверки - разрешаем вход с любым паролем для пользователя "admin"
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == Input.Username);
-
-            if (user == null && Input.Username == "admin")
+            try
             {
-                // Создаем временного админа если не существует
-                user = new User
+                _logger.LogInformation($"Attempting login for user: {Input.Username}");
+
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == Input.Username);
+                if (user == null)
                 {
-                    Username = "admin",
-                    PasswordHash = "dummy", // Не используется в этом режиме
-                    Role = "Admin"
+                    _logger.LogWarning("User not found");
+                    ModelState.AddModelError(string.Empty, "Неверные учетные данные");
+                    return Page();
+                }
+
+                _logger.LogInformation($"Found user: {user.Username}, Role: {user.Role}");
+
+                using var sha256 = SHA256.Create();
+                var inputHash = Convert.ToHexString(
+                    sha256.ComputeHash(Encoding.UTF8.GetBytes(Input.Password)));
+
+                _logger.LogInformation($"Input password hash: {inputHash}");
+                _logger.LogInformation($"Stored password hash: {user.PasswordHash}");
+
+                if (user.PasswordHash != inputHash)
+                {
+                    _logger.LogWarning("Password mismatch");
+                    ModelState.AddModelError(string.Empty, "Неверные учетные данные");
+                    return Page();
+                }
+
+                var claims = new List<Claim>
+                {
+                    new(ClaimTypes.Name, user.Username),
+                    new(ClaimTypes.Role, user.Role)
                 };
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-            }
 
-            if (user == null || user.Role != "Admin")
+                var claimsIdentity = new ClaimsIdentity(
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    new AuthenticationProperties
+                    {
+                        IsPersistent = true,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2)
+                    });
+
+                return RedirectToPage("/Admin/Index");
+            }
+            catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                _logger.LogError(ex, "Ошибка при входе");
+                ModelState.AddModelError(string.Empty, "Произошла ошибка при входе");
                 return Page();
             }
-
-            // Пропускаем проверку пароля
-            var claims = new List<Claim>
-    {
-        new(ClaimTypes.Name, user.Username),
-        new(ClaimTypes.Role, user.Role)
-    };
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
-                new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2)
-                });
-
-            return RedirectToPage("/Admin/Index");
         }
     }
 }

@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                <i class="fas fa-user-circle me-1"></i> @User.Identity?.Name
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <form class="form-inline" asp-page="/Admin/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })">
+                        <button type="submit" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt me-1"></i>Выйти
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Admin/Login">
+                <i class="fas fa-sign-in-alt me-1"></i>Вход
+            </a>
+        </li>
+    }
+</ul>

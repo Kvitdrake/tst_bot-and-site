@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using webb_tst_site.Data;
-using Microsoft.EntityFrameworkCore;
-using webb_tst_site.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using webb_tst_site.Data;
+using webb_tst_site.Models;
 
 namespace webb_tst_site.Pages.Admin.Spheres
 {
@@ -15,11 +15,14 @@ namespace webb_tst_site.Pages.Admin.Spheres
             _context = context;
         }
 
-        public IList<Sphere> Spheres { get; set; } // Добавлено свойство Spheres
+        public IList<Sphere> Spheres { get; set; }
 
         public async Task OnGetAsync()
         {
-            Spheres = await _context.Spheres.ToListAsync(); // Загрузка списка сфер
+            Spheres = await _context.Spheres
+                .OrderBy(s => s.Name)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)

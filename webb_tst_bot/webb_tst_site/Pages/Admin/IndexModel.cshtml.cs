@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using webb_tst_site.Data;
 using Microsoft.EntityFrameworkCore;
 using webb_tst_site.Models;
-using webb_tst_site.Pages.Shared;
+using webb_tst_site.Pages;
 
 namespace webb_tst_site.Pages.Admin
 {

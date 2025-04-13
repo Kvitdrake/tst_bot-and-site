@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using webb_tst_site.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using webb_tst_site.Data;
 using webb_tst_site.Models;
 
 namespace webb_tst_site.Pages.Admin.Runes
@@ -22,6 +22,8 @@ namespace webb_tst_site.Pages.Admin.Runes
             Runes = await _context.Runes
                 .Include(r => r.SphereDescriptions)
                 .ThenInclude(sd => sd.Sphere)
+                .OrderBy(r => r.Name)
+                .AsNoTracking()
                 .ToListAsync();
         }
 

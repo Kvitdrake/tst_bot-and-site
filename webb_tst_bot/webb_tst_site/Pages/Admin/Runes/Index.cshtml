@@ -1,45 +1,54 @@
 ﻿@page
 @model webb_tst_site.Pages.Admin.Runes.IndexModel
 @{
-    ViewData["Title"] = "All Runes";
+    ViewData["Title"] = "Управление рунами";
 }
 
-<div class="container mt-4">
+<div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>All Runes</h1>
-        <a asp-page="Create" class="btn btn-primary">Add New Rune</a>
+        <h1>@ViewData["Title"]</h1>
+        <a asp-page="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить руну
+        </a>
     </div>
 
-    <div class="row">
-        @foreach (var rune in Model.Runes)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    @if (!string.IsNullOrEmpty(rune.ImageUrl))
-                    {
-                        <img src="@rune.ImageUrl" class="card-img-top" alt="@rune.Name"
-                             style="height: 200px; object-fit: contain;"
-                             onerror="this.onerror=null;this.src='/images/default-image.png';">
-                    }
-                    else
-                    {
-                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
-                             style="height: 200px;">
-                            <span class="text-muted">No image</span>
+    @if (Model.Runes.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var rune in Model.Runes)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-img-top text-center p-3 bg-light">
+                            <img src="@(rune.ImageUrl ?? "/images/default-rune.png")"
+                                 class="img-fluid" style="max-height: 150px;"
+                                 onerror="this.onerror=null;this.src='/images/default-rune.png'">
                         </div>
-                    }
-                    <div class="card-body">
-                        <h5 class="card-title">@rune.Name</h5>
-                        <p class="card-text">@rune.BaseDescription</p>
-                    </div>
-                    <div class="card-footer bg-transparent">
-                        <a asp-page="Edit" asp-route-id="@rune.Id" class="btn btn-warning">Edit</a>
-                        <form method="post" asp-page-handler="Delete" asp-route-id="@rune.Id" class="d-inline">
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
+                        <div class="card-body">
+                            <h5 class="card-title">@rune.Name</h5>
+                            <p class="card-text text-muted">@rune.BaseDescription</p>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <div class="d-flex justify-content-between">
+                                <a asp-page="Edit" asp-route-id="@rune.Id" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Изменить
+                                </a>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@rune.Id">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i> Удалить
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Нет доступных рун. Создайте первую руну.
+        </div>
+    }
 </div>

@@ -19,35 +19,26 @@ namespace webb_tst_site.Pages.Admin.Runes
         public Rune Rune { get; set; }
 
         public List<Sphere> AllSpheres { get; set; }
-
         public Dictionary<int, string> SphereDescriptions { get; set; } = new();
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == null)
-            {
-                Rune = new Rune();
-            }
-            else
-            {
-                Rune = await _context.Runes
-                    .Include(r => r.SphereDescriptions)
-                    .FirstOrDefaultAsync(r => r.Id == id);
+            Rune = await _context.Runes
+                .Include(r => r.SphereDescriptions)
+                .FirstOrDefaultAsync(r => r.Id == id);
 
-                if (Rune == null)
-                {
-                    return NotFound();
-                }
+            if (Rune == null)
+            {
+                return NotFound();
             }
 
             AllSpheres = await _context.Spheres.ToListAsync();
 
-            // Заполняем описания для сфер
             foreach (var sphere in AllSpheres)
             {
                 var description = Rune.SphereDescriptions?
                     .FirstOrDefault(sd => sd.SphereId == sphere.Id)?
-                    .Description ?? string.Empty;
+                    .Description ?? "Нет описания";
                 SphereDescriptions[sphere.Id] = description;
             }
 
@@ -62,69 +53,28 @@ namespace webb_tst_site.Pages.Admin.Runes
                 return Page();
             }
 
-            if (Rune.Id == 0)
-            {
-                // Новая руна
-                _context.Runes.Add(Rune);
-                await _context.SaveChangesAsync();
+            var existingRune = await _context.Runes
+                .Include(r => r.SphereDescriptions)
+                .FirstOrDefaultAsync(r => r.Id == Rune.Id);
 
-                // Добавляем все сферы с пустыми описаниями
-                foreach (var sphere in await _context.Spheres.ToListAsync())
-                {
-                    _context.RuneSphereDescriptions.Add(new RuneSphereDescription
-                    {
-                        RuneId = Rune.Id,
-                        SphereId = sphere.Id,
-                        Description = Request.Form[$"SphereDescriptions[{sphere.Id}]"]
-                    });
-                }
+            if (existingRune == null)
+            {
+                return NotFound();
             }
-            else
+
+            existingRune.Name = Rune.Name;
+            existingRune.BaseDescription = Rune.BaseDescription;
+            existingRune.ImageUrl = Rune.ImageUrl ?? "/images/default-rune.png";
+            existingRune.UpdatedAt = DateTime.UtcNow;
+
+            // Обновляем описания для сфер
+            foreach (var description in existingRune.SphereDescriptions)
             {
-                // Обновление существующей руны
-                var existingRune = await _context.Runes
-                    .Include(r => r.SphereDescriptions)
-                    .FirstOrDefaultAsync(r => r.Id == Rune.Id);
-
-                if (existingRune == null)
-                {
-                    return NotFound();
-                }
-
-                existingRune.Name = Rune.Name;
-                existingRune.BaseDescription = Rune.BaseDescription;
-                existingRune.ImageUrl = Rune.ImageUrl;
-
-                // Обновляем описания для сфер
-                foreach (var description in existingRune.SphereDescriptions)
-                {
-                    description.Description = Request.Form[$"SphereDescriptions[{description.SphereId}]"];
-                }
-
-                // Добавляем новые сферы, если они появились
-                var existingSphereIds = existingRune.SphereDescriptions.Select(sd => sd.SphereId);
-                var allSphereIds = (await _context.Spheres.Select(s => s.Id).ToListAsync());
-
-                foreach (var sphereId in allSphereIds.Except(existingSphereIds))
-                {
-                    _context.RuneSphereDescriptions.Add(new RuneSphereDescription
-                    {
-                        RuneId = Rune.Id,
-                        SphereId = sphereId,
-                        Description = Request.Form[$"SphereDescriptions[{sphereId}]"]
-                    });
-                }
+                description.Description = Request.Form[$"SphereDescriptions[{description.SphereId}]"];
             }
 
             await _context.SaveChangesAsync();
             return RedirectToPage("./Index");
-        }
-
-        public string GetDescriptionForSphere(int sphereId)
-        {
-            return SphereDescriptions.TryGetValue(sphereId, out var description)
-                ? description
-                : string.Empty;
         }
     }
 }

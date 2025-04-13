@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using webb_tst_site.Data;
 using webb_tst_site.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace webb_tst_site.Pages.Admin.Spheres
 {
@@ -25,25 +25,25 @@ namespace webb_tst_site.Pages.Admin.Spheres
                 return Page();
             }
 
-            // Если ссылка на изображение не указана, устанавливаем пустую строку
-            Sphere.ImageUrl ??= string.Empty;
+            Sphere.ImageUrl ??= "/images/default-sphere.png";
+            Sphere.CreatedAt = DateTime.UtcNow;
+            Sphere.UpdatedAt = DateTime.UtcNow;
 
             _context.Spheres.Add(Sphere);
             await _context.SaveChangesAsync();
 
-            // Добавляем новую сферу ко всем существующим рунам
-            var allRunes = await _context.Runes.ToListAsync();
-            foreach (var rune in allRunes)
+            // Добавляем связи со всеми рунами
+            foreach (var rune in await _context.Runes.ToListAsync())
             {
                 _context.RuneSphereDescriptions.Add(new RuneSphereDescription
                 {
                     RuneId = rune.Id,
                     SphereId = Sphere.Id,
-                    Description = string.Empty
+                    Description = "Нет описания"
                 });
             }
-            await _context.SaveChangesAsync();
 
+            await _context.SaveChangesAsync();
             return RedirectToPage("./Index");
         }
     }

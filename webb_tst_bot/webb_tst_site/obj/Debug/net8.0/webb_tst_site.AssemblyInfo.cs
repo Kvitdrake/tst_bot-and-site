@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("webb_tst_site")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+080be0812d634fc6bd6475a32bc80376dd7a7837")]
 [assembly: System.Reflection.AssemblyProductAttribute("webb_tst_site")]
 [assembly: System.Reflection.AssemblyTitleAttribute("webb_tst_site")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

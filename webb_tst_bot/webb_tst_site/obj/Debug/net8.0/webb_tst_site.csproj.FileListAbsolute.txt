@@ -42,3 +42,4 @@ C:\GitHub\bots\webb_tst_bot\webb_tst_site\bin\Debug\net8.0\Serilog.Formatting.Co
 C:\GitHub\bots\webb_tst_bot\webb_tst_site\bin\Debug\net8.0\Serilog.Sinks.Async.dll
 C:\GitHub\bots\webb_tst_bot\webb_tst_site\bin\Debug\net8.0\Serilog.Sinks.File.dll
 C:\GitHub\bots\webb_tst_bot\webb_tst_site\bin\Debug\net8.0\Serilog.Sinks.RollingFile.dll
+C:\GitHub\bots\webb_tst_bot\webb_tst_site\obj\Debug\net8.0\webb_tst_site.sourcelink.json

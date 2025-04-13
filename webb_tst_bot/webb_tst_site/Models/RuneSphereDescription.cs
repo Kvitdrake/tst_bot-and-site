@@ -9,8 +9,6 @@ namespace webb_tst_site.Models
         public Rune Rune { get; set; }
         public int SphereId { get; set; }
         public Sphere Sphere { get; set; }
-
-        [Required]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty; // Значение по умолчанию
     }
 }
