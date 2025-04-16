@@ -11,7 +11,7 @@ namespace webb_tst_bot
     class Program
     {
         private static readonly string BotToken = "7782818485:AAEwavcB7aPECAo4j57xtgwZjvjUyzasIBc";
-        private static readonly string WebAppUrl = "https://35c1-31-58-141-50.ngrok-free.app"; //ngrok http https://localhost:7123
+        private static readonly string WebAppUrl = "https://a87b-2a13-7c00-6-28-f816-3eff-fe56-640e.ngrok-free.app"; //ngrok http https://localhost:7123
         private static TelegramBotClient botClient;
 
         static async Task Main(string[] args)

@@ -11,14 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap5")]
-[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("f054cec5-5dec-4638-b88c-9e1faf5f55d1")]
-[assembly: System.Reflection.AssemblyCompanyAttribute("webb_tst_site3")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("webb_tst_bot")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c5f818d4086ef87b2051a44036fa0b3e485957b")]
-[assembly: System.Reflection.AssemblyProductAttribute("webb_tst_site3")]
-[assembly: System.Reflection.AssemblyTitleAttribute("webb_tst_site3")]
+[assembly: System.Reflection.AssemblyProductAttribute("webb_tst_bot")]
+[assembly: System.Reflection.AssemblyTitleAttribute("webb_tst_bot")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Создано классом WriteCodeFragment MSBuild.
